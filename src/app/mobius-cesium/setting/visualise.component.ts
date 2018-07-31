@@ -67,22 +67,21 @@ export class DataComponent extends DataSubscriber implements OnInit {
 
   public onChangeColor(value) {
     this.dataArr["ColorKey"] = value;
-    const promise = this.dataService.getcesiumpromise();
+    //const promise = this.dataService.getcesiumpromise();
     const _Colortexts = [];
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
-      for (const entity of entities) {
-        if(entity.properties[value] !== undefined) {
-        if(entity.properties[value]._value !== " ") {
-          if(_Colortexts.length === 0) {_Colortexts[0] = entity.properties[value]._value;
-          } else { if(_Colortexts.indexOf(entity.properties[value]._value) === -1) {
-            _Colortexts.push(entity.properties[value]._value);}
-            }
+    const viewer = this.dataService.getViewer();
+    const entities = viewer.entities.values;
+    for (const entity of entities) {
+      if(entity.properties[value] !== undefined) {
+      if(entity.properties[value]._value !== " ") {
+        if(_Colortexts.length === 0) {_Colortexts[0] = entity.properties[value]._value;
+        } else { if(_Colortexts.indexOf(entity.properties[value]._value) === -1) {
+          _Colortexts.push(entity.properties[value]._value);}
           }
         }
       }
-    });
+    }
     this.dataArr["ColorMin"] = Math.min.apply(Math, _Colortexts);
     this.dataArr["ColorMax"] = Math.max.apply(Math, _Colortexts);
     this.dataArr["ColorText"] = _Colortexts.sort();
@@ -105,11 +104,12 @@ export class DataComponent extends DataSubscriber implements OnInit {
 
   public onChangeHeight(value) {
     this.dataArr["ExtrudeKey"] = value;
-    const promise = this.dataService.getcesiumpromise();
+    //const promise = this.dataService.getcesiumpromise();
     const _Heighttexts = [];
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
+    const viewer = this.dataService.getViewer();
+    //promise.then(function(dataSource) {
+      const entities = viewer.entities.values;
       for (const entity of entities) {
         if(entity.properties[value] !== undefined) {
         if(entity.properties[value]._value !== " ") {
@@ -120,7 +120,7 @@ export class DataComponent extends DataSubscriber implements OnInit {
           }
         }
       }
-    });
+    //});
     this.dataArr["ExtrudeMin"] = Math.min.apply(Math, _Heighttexts);
     this.dataArr["ExtrudeMax"] = Math.max.apply(Math, _Heighttexts);
     this.dataArr["ExtrudeText"] = _Heighttexts.sort();
@@ -261,10 +261,11 @@ export class DataComponent extends DataSubscriber implements OnInit {
     const HeightHide = this._Filter[index].HeightHide;
     this._Filter[index].RelaHide = _RelaHide;
     const texts = [];
-    const promise = this.dataService.getcesiumpromise();
+    //const promise = this.dataService.getcesiumpromise();
+    const viewer = this.dataService.getViewer();
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
+    //promise.then(function(dataSource) {
+      const entities = viewer.entities.values;
       for (const entity of entities) {
       if(entity.properties[HeightHide] !== undefined) {
         if(entity.properties[HeightHide]._value !== " ") {
@@ -275,7 +276,7 @@ export class DataComponent extends DataSubscriber implements OnInit {
           }
         }
       }
-    });
+    //});
     this._Filter[index].HideMax = Math.ceil(Math.max.apply(Math, texts));
     this._Filter[index].HideMin = Math.round(Math.min.apply(Math, texts)*100)/100;
     if(_RelaHide==="0"||_RelaHide === 0) {this._Filter[index].textHide = this._Filter[index].HideMin;}
@@ -299,10 +300,11 @@ export class DataComponent extends DataSubscriber implements OnInit {
 
   public  Initial(_HideValue: string): any[] {
     const texts = [];
-    const promise = this.dataService.getcesiumpromise();
+    //const promise = this.dataService.getcesiumpromise();
+    const viewer = this.dataService.getViewer();
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
+    //promise.then(function(dataSource) {
+      const entities = viewer.entities.values;
       for (const entity of entities) {
         if(entity.properties[_HideValue] !== undefined) {
           if(entity.properties[_HideValue]._value !== " ") {
@@ -313,7 +315,7 @@ export class DataComponent extends DataSubscriber implements OnInit {
           }
         }
       }
-    });
+    //});
     return texts;
   }
 }

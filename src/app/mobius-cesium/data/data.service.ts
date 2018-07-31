@@ -116,92 +116,6 @@ export class DataService {
   public get_UTC(): number{
     return this._UTC;
   }
-  /*public set_imageryViewModels() :void{
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Stamen Toner",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/ImageryProviders/stamenToner.png"),
-     tooltip : "A high contrast black and white map.\nhttp://www.maps.stamen.com/",
-     creationFunction : function() {
-         return Cesium.createOpenStreetMapImageryProvider({
-             url : "https://stamen-tiles.a.ssl.fastly.net/toner/",
-         });
-     },
-    }));
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Stamen Toner(Lite)",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/ImageryProviders/stamenToner.png"),
-     tooltip : "A high contrast black and white map(Lite).\nhttp://www.maps.stamen.com/",
-     creationFunction : function() {
-         return Cesium.createOpenStreetMapImageryProvider({
-             url : "https://stamen-tiles.a.ssl.fastly.net/toner-lite/",
-         });
-     },
-    }));
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Terrain(Standard)",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/TerrainProviders/CesiumWorldTerrain.png"),
-     tooltip : "A high contrast black and white map(Standard).\nhttp://www.maps.stamen.com/",
-     creationFunction : function() {
-         return Cesium.createOpenStreetMapImageryProvider({
-             url : "https://stamen-tiles.a.ssl.fastly.net/terrain/",
-         });
-     },
-    }));
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Terrain(Background)",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/TerrainProviders/CesiumWorldTerrain.png"),
-     tooltip : "A high contrast black and white map(Background).\nhttp://www.maps.stamen.com/",
-     creationFunction : function() {
-         return Cesium.createOpenStreetMapImageryProvider({
-             url : "https://stamen-tiles.a.ssl.fastly.net/terrain-background/",
-         });
-     },
-    }));
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Open\u00adStreet\u00adMap",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/ImageryProviders/openStreetMap.png"),
-     tooltip : "OpenStreetMap (OSM) is a collaborative project to create a free editable \
-             map of the world.\nhttp://www.openstreetmap.org",
-     creationFunction : function() {
-         return Cesium.createOpenStreetMapImageryProvider({
-             url : "https://a.tile.openstreetmap.org/",
-         });
-     },
-    }));
-
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Earth at Night",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/ImageryProviders/earthAtNight.png"),
-     tooltip : "The lights of cities and villages trace the outlines of civilization \
-                 in this global view of the Earth at night as seen by NASA/NOAA\'s Suomi NPP satellite.",
-     creationFunction : function() {
-         return new Cesium.IonImageryProvider({ assetId: 3812 });
-     },
-    }));
-
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Natural Earth\u00a0II",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/ImageryProviders/naturalEarthII.png"),
-     tooltip : "Natural Earth II, darkened for contrast.\nhttp://www.naturalearthdata.com/",
-     creationFunction : function() {
-         return Cesium.createTileMapServiceImageryProvider({
-             url : Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"),
-         });
-     },
-    }));
-
-    this._imageryViewModels.push(new Cesium.ProviderViewModel({
-     name : "Blue Marble",
-     iconUrl : Cesium.buildModuleUrl("Widgets/Images/ImageryProviders/blueMarble.png"),
-     tooltip : "Blue Marble Next Generation July, 2004 imagery from NASA.",
-     creationFunction : function() {
-         return new Cesium.IonImageryProvider({ assetId: 3845 });
-     },
-    }));
-  }
-  public get_imageryViewModels(): any[] {
-    return this._imageryViewModels;
-  }*/
   public set_Imagery(_Imagery): void {
     this._Imagery = _Imagery;
   }
@@ -229,7 +143,7 @@ export class DataService {
           }
         }
       }
-      
+
       propertyName.sort();
       propertyName.unshift("None");
       const propertyNames = propertyName.filter(function(value) { 
@@ -243,50 +157,83 @@ export class DataService {
       _HeightKey.unshift("None");
       const _HeightValue = _HeightKey[0];
 
-      const promise = this.cesiumpromise;
       const _Heighttexts: any[] = [];
       const _Colortexts: any[] = [];
       const _indexArr: number[] = [];
       const self = this;
-      promise.then(function(dataSource) {
-        const entities = dataSource.entities.values;
-        for (const entity of entities) {
-          if(entity.properties["TYPE"] === undefined||entity.properties["TYPE"]._value !== "STATIC"){
-            if(entity.properties[_HeightValue] !== undefined) {
-              if(entity.properties[_HeightValue]._value !== " ") {
-                if(_Heighttexts.length === 0) {_Heighttexts[0]=entity.properties[_HeightValue]._value;
-                } else { if(_Heighttexts.indexOf(entity.properties[_HeightValue]._value) === -1) {
-                 _Heighttexts.push(entity.properties[_HeightValue]._value);}
+
+      for(const feature of model["features"]){
+        if(feature["geometry"]["coordinates"][0] !== undefined){
+          let coorArray = [];
+          if(feature["geometry"].type !== "Point"){
+            let coordinates = feature["geometry"]["coordinates"];
+            for(let coordinate of coordinates){
+              if(coordinate[0][0]!==undefined){
+                if(feature["geometry"]["coordinates"][0][0][0][0]!==undefined){
+                  if(typeof(feature["geometry"]["coordinates"][0][0][0][0]) === "number"){
+                    coordinate = coordinate[0];
+                  }
                 }
               }
-            }
-            if(entity.properties[_ColorValue] !== undefined) {
-              if(entity.properties[_ColorValue]._value !== " ") {
-                if(_Colortexts.length === 0) {_Colortexts[0] = entity.properties[_ColorValue]._value;
-                } else { if(_Colortexts.indexOf(entity.properties[_ColorValue]._value) === -1) {
-                  _Colortexts.push(entity.properties[_ColorValue]._value);}
-                }
+              for(const coor of coordinate){
+                coorArray.push(coor[0]);
+                coorArray.push(coor[1]);
               }
             }
-            _indexArr.push(entities.indexOf(entity));
-          } else {
-            entity.polygon.height =  entity.properties["HEIGHT"];
-            entity.polygon.extrudedHeight = entity.properties["EXTRUDEDHEIGHT"];
-            const ColorValue = entity.properties["COLOR"]._value;
-            entity.polygon.material = Cesium.Color.fromBytes(ColorValue[0], ColorValue[1], ColorValue[2], ColorValue[3]);
           }
-          if(entity.polygon !== undefined) {
-              entity.polygon.outlineColor = Cesium.Color.Black;
-          }
-          if(entity.billboard !== undefined) {
-            entity.billboard = undefined;
-            entity.point = new Cesium.PointGraphics({
-              color: Cesium.Color.BLUE,
-              pixelSize: 10,
+          
+          if(feature["geometry"].type === "MultiPolygon" || feature["geometry"].type === "Polygon"){
+            let color,extrudedheight,height;
+            if(feature["properties"]["TYPE"] === undefined||feature["properties"]["TYPE"] !== "STATIC"){
+              color = Cesium.Color.DARKGREY;
+              extrudedheight = 0;
+              height = 0;
+              _indexArr.push(model["features"].indexOf(feature));
+            }else {
+              const ColorValue = feature["properties"]["COLOR"];
+              color = Cesium.Color.fromBytes(ColorValue[0], ColorValue[1], ColorValue[2], ColorValue[3]);
+              extrudedheight = feature["properties"]["EXTRUHEIGHT"];
+              height = feature["properties"]["HEIGHT"];
+            }
+            const entity = this.PolygonEntity(coorArray,feature,color,extrudedheight,height);
+            this.viewer.entities.add({
+              polygon: entity,
+              properties:feature["properties"]
+            })
+          } else if(feature["geometry"].type === "Polyline" ||feature["geometry"].type === "LineString" ){
+            const entity = this.PolylineEntity(coorArray);
+            this.viewer.entities.add({
+              polyline: entity,
+              properties:feature["properties"]
             });
+            _indexArr.push(model["features"].indexOf(feature));
+          } else if(feature["geometry"].type === "Point"){
+            let Pointsco = feature["geometry"]["coordinates"];
+            if(Pointsco[0][0]!==undefined){
+              if(Pointsco[0][0][0]!==undefined){
+                if(typeof(Pointsco[0][0][0]) === "number"){
+                  Pointsco = Pointsco[0];
+                }
+                if(feature["geometry"]["coordinates"][0][0][0][0]!==undefined){
+                  if(typeof(feature["geometry"]["coordinates"][0][0][0][0]) === "number"){
+                    Pointsco = Pointsco[0][0];
+                  }
+                }
+              }
+            }
+            if(feature["geometry"]["coordinates"] !== undefined){
+              const entity = this.PointEntity();
+              this.viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(Pointsco[0], Pointsco[1]),
+                point: entity,
+                properties:feature["properties"]
+              });
+              _indexArr.push(model["features"].indexOf(feature));
+            }
           }
         }
-      });
+      }
+      this.viewer.zoomTo(this.viewer.entities);
       const _MinColor = Math.min.apply(Math, _Colortexts);
       const _MaxColor = Math.max.apply(Math, _Colortexts);
       const _MinHeight = Math.min.apply(Math, _Heighttexts);
@@ -298,6 +245,35 @@ export class DataService {
                      false,false,_Filter,_HideNum,_indexArr);
     }
   }
+  public PolygonEntity(coorArray: Array<number>,feature: object,color:any,extrudedheight:number,height:number): any{
+    const entity = new Cesium.PolygonGraphics({
+      hierarchy : {
+        positions: Cesium.Cartesian3.fromDegreesArray(coorArray)
+      },
+      height:height,
+      extrudedHeight:extrudedheight,
+      material: color,
+      outline: true,
+      outlineColor: Cesium.Color.BLACK
+    });
+    return entity;
+  }
+  public PolylineEntity(coorArray: Array<number>): any{
+    const entity = new Cesium.PolylineGraphics({
+      positions : Cesium.Cartesian3.fromDegreesArray(coorArray),
+      material: Cesium.Color.DARKGREY,
+      width: 2
+    });
+    return entity;
+  }
+  public PointEntity(): any{
+    const entity = new Cesium.PointGraphics({
+      color: Cesium.Color.DARKGREY,
+      pixelSize: 5
+    });
+    return entity;
+  }
+
   public get_ViData(): object {
     return this._ViData;
   }
@@ -360,42 +336,40 @@ export class DataService {
           } else {_HeightScale = 1;}
         }
       }
-      const promise = this.cesiumpromise;
       const _Heighttexts = [];
       const _Colortexts = [];
       const self = this;
-      promise.then(function(dataSource) {
-        const entities = dataSource.entities.values;
-        for (const entity of entities) {
-          if(entity.properties[_HeightValue] !== undefined) {
-            if(entity.properties[_HeightValue]._value !== " ") {
-              if(_Heighttexts.length === 0) {_Heighttexts[0] = entity.properties[_HeightValue]._value;
-              } else { if(_Heighttexts.indexOf(entity.properties[_HeightValue]._value) === -1) {
-                _Heighttexts.push(entity.properties[_HeightValue]._value);}
-              }
+      const viewer = this.viewer;
+      const entities = viewer.entities.values;
+      for (const entity of entities) {
+        if(entity.properties[_HeightValue] !== undefined) {
+          if(entity.properties[_HeightValue]._value !== " ") {
+            if(_Heighttexts.length === 0) {_Heighttexts[0] = entity.properties[_HeightValue]._value;
+            } else { if(_Heighttexts.indexOf(entity.properties[_HeightValue]._value) === -1) {
+              _Heighttexts.push(entity.properties[_HeightValue]._value);}
             }
           }
-          if(entity.properties[_ColorValue] !== undefined) {
-            if(entity.properties[_ColorValue]._value !== " ") {
-              if(_Colortexts.length === 0) {_Colortexts[0] = entity.properties[_ColorValue]._value;
-              } else { if(_Colortexts.indexOf(entity.properties[_ColorValue]._value) === -1) {
-                _Colortexts.push(entity.properties[_ColorValue]._value);}
-              }
-            }
-          }
-          if(entity.polygon !== undefined) {
-            entity.polygon.outlineColor = Cesium.Color.Black;
-          }
-          if(entity.billboard !== undefined) {
-            entity.billboard = undefined;
-            entity.point = new Cesium.PointGraphics({
-              color: Cesium.Color.BLUE,
-              pixelSize: 10,
-            });
-          }
-          _indexArr.push(entities.indexOf(entity));
         }
-      });
+        if(entity.properties[_ColorValue] !== undefined) {
+          if(entity.properties[_ColorValue]._value !== " ") {
+            if(_Colortexts.length === 0) {_Colortexts[0] = entity.properties[_ColorValue]._value;
+            } else { if(_Colortexts.indexOf(entity.properties[_ColorValue]._value) === -1) {
+              _Colortexts.push(entity.properties[_ColorValue]._value);}
+            }
+          }
+        }
+        if(entity.polygon !== undefined) {
+          entity.polygon.outlineColor = Cesium.Color.Black;
+        }
+        if(entity.billboard !== undefined) {
+          entity.billboard = undefined;
+          entity.point = new Cesium.PointGraphics({
+            color: Cesium.Color.BLUE,
+            pixelSize: 10,
+          });
+        }
+        _indexArr.push(entities.indexOf(entity));
+      }
       if(cesiumData["filters"] !== undefined) {
         _filters = cesiumData["filters"];
         let lastnumber: string;
@@ -448,10 +422,11 @@ export class DataService {
   }
   public  Initial(_HideValue: string): any[] {
     const texts=[];
-    const promise = this.getcesiumpromise();
+    const viewer = this.viewer;
+    //const promise = this.getcesiumpromise();
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
+    /*promise.then(function(dataSource) {*/
+      const entities = viewer.entities.values;
       for (const entity of entities) {
         if(entity.properties[_HideValue] !== undefined) {
           if(entity.properties[_HideValue]._value !== " ") {
@@ -462,7 +437,7 @@ export class DataService {
           }
         }
       }
-    });
+    /*});*/
     return texts;
   }
 

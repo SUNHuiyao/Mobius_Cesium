@@ -65,8 +65,7 @@ export class ViewerComponent extends DataSubscriber {
       automaticallyTrackDataSourceClocks:false,
       animation:false,
       shadows:true,
-      scene3DOnly:true,
-      //terrainShadows: Cesium.ShadowMode.ENABLED
+      scene3DOnly:true
     });
     viewer.scene.imageryLayers.removeAll();
     viewer.scene.globe.baseColor = Cesium.Color.GRAY;
@@ -74,7 +73,8 @@ export class ViewerComponent extends DataSubscriber {
     const self = this;
     viewer.homeButton.viewModel.command.beforeExecute.addEventListener(function(e) {
         e.cancel = true;
-        viewer.zoomTo(self.dataService.getcesiumpromise());
+        //viewer.zoomTo(self.dataService.getcesiumpromise());
+        viewer.zoomTo(viewer.entities);
     });
     this.dataService.setViewer(viewer);
   }
@@ -82,20 +82,13 @@ export class ViewerComponent extends DataSubscriber {
   public LoadData(data: JSON) {
     if(this.data !== undefined) {
       const viewer = this.dataService.getViewer();
-      viewer.dataSources.removeAll({destroy:true}); 
-
+      viewer.entities.removeAll();
       this.data = data;
-      const promise = Cesium.GeoJsonDataSource.load(this.data);
-      viewer.dataSources.add(promise);
-      const _HeightKey: any[] = [];
-
-      promise.then(function(dataSource) {
-        const entities = dataSource.entities.values;
-        const self = this;
-        if(entities[0].polygon !== undefined) {self._ShowColorBar = true;} else {self._ShowColorBar = false;}
-      });
-      
-      this.dataService.setcesiumpromise(promise);
+      if(viewer.entities.values[0] !== undefined){
+        if(viewer.entities.values[0].polygon !== undefined){
+          this._ShowColorBar = true;
+        } else {this._ShowColorBar = false;}
+      }
       if(this.mode === "editor") {
         this.dataService.getValue(this.data);
         this.dataService.LoadJSONData();
@@ -103,11 +96,11 @@ export class ViewerComponent extends DataSubscriber {
         this._index = 1;
       }
       if(this.mode === "viewer") {
+        this.dataService.getValue(this.data);
         this.dataService.LoadJSONData();
         this.dataArr = this.dataService.get_PuData();
         this._index = 3;
       }
-      viewer.zoomTo(promise);
       this.Colortext();
     }
   }
@@ -207,7 +200,7 @@ export class ViewerComponent extends DataSubscriber {
   }
 
   public ColorSelect(entity) {
-    const promise = this.dataService.getcesiumpromise();
+    //const promise = this.dataService.getcesiumpromise();
     const _ColorKey: string = this.dataArr["ColorKey"];
     const _ColorMax: number = this.dataArr["ColorMax"];
     const _ColorMin: number = this.dataArr["ColorMin"];

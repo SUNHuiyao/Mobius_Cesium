@@ -68,7 +68,8 @@ export class SettingComponent extends DataSubscriber implements OnInit {
   }
 
   public LoadViewer() {
-    const promise = this.dataService.getcesiumpromise();
+
+    //const promise = this.dataService.getcesiumpromise();
     const _ColorKey: string = this.dataArr["ColorKey"];
     const _ColorMax: number = this.dataArr["ColorMax"];
     const _ColorMin: number = this.dataArr["ColorMin"];
@@ -80,6 +81,7 @@ export class SettingComponent extends DataSubscriber implements OnInit {
     const _HeightChart: boolean = this.dataArr["HeightChart"];
     const _Invert: boolean = this.dataArr["Invert"];
     const _Scale: number = this.dataArr["Scale"];
+    const viewer = this.dataService.getViewer();
     
     const _indexArr: number[] = this.dataArr["indexArr"];
     let _Filter: any[];
@@ -89,8 +91,8 @@ export class SettingComponent extends DataSubscriber implements OnInit {
     let _ChromaScale = chroma.scale("SPECTRAL");
     if(_ColorInvert === true) {_ChromaScale = chroma.scale("SPECTRAL").domain([1,0]);}
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
+    //promise.then(function(dataSource) {
+      const entities = viewer.entities.values;
       for (const i of _indexArr) {
         const entity = entities[i];
         let _CheckHide: boolean;
@@ -122,8 +124,7 @@ export class SettingComponent extends DataSubscriber implements OnInit {
                 if(entity.properties[_ExtrudeKey] !==undefined) {
                   entity.polygon.extrudedHeight = self.ExtrudeHeight(entity.properties[_ExtrudeKey]._value,
                                                                   _ExtrudeMax,_ExtrudeMin,_Invert)*_Scale;
-                } else {entity.polygon.extrudedHeight = 0;}
-                
+                } else {entity.polygon.extrudedHeight = 0;} 
               } else {
                 entity.polygon.extrudedHeight =0;
                 const center =  Cesium.BoundingSphere.fromPoints(entity.polygon.hierarchy.getValue().positions).center;
@@ -154,9 +155,16 @@ export class SettingComponent extends DataSubscriber implements OnInit {
             } else {self.colorByCat(entity,_ColorText,_ColorKey,_ChromaScale);}
             } else {entity.polyline.material = Cesium.Color.DARKGREY;
           }
+        } else if(entity.point!==undefined){
+          if(_ColorKey !== "None") {
+            if(typeof(_ColorText[0]) === "number") {
+              self.colorByNum(entity,_ColorMax,_ColorMin,_ColorKey,_ChromaScale);
+            } else {self.colorByCat(entity,_ColorText,_ColorKey,_ChromaScale);}
+            } else {entity.point.color = Cesium.Color.DARKGREY;
+          }
         }
       }
-    });
+    //});
   }
 
   public Hide(_Filter: any[], entity, _HeightChart: boolean): boolean {
@@ -222,9 +230,14 @@ export class SettingComponent extends DataSubscriber implements OnInit {
         const newColor = new Cesium.Color.fromBytes(rgb[0],rgb[1],rgb[2]);
         entity.polyline.material.color.setValue(newColor);
       }
+      if(entity.point !==undefined){
+        const newColor = new Cesium.Color.fromBytes(rgb[0],rgb[1],rgb[2]);
+        entity.point.color = newColor;
+      }
     }else{
       if(entity.polygon !== undefined) {entity.polygon.material = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
       if(entity.polyline !== undefined) {entity.polyline.material = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
+      if(entity.point !== undefined) {entity.point.color = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
     }
   }
 
@@ -239,16 +252,22 @@ export class SettingComponent extends DataSubscriber implements OnInit {
             const newColor = new Cesium.Color.fromBytes(rgb[0],rgb[1],rgb[2]);
             entity.polyline.material.color.setValue(newColor);
           }
+          if(entity.point !== undefined) {
+            const newColor = new Cesium.Color.fromBytes(rgb[0],rgb[1],rgb[2]);
+            entity.point.color = newColor;
+          }
           initial = true;
         }
       }
       if(initial === false) {
         if(entity.polygon !== undefined){entity.polygon.material = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
         if(entity.polyline !== undefined) {entity.polyline.material = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
+        if(entity.point !== undefined) {entity.point.color = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
       }
     }else{
       if(entity.polygon !== undefined) {entity.polygon.material = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
       if(entity.polyline !== undefined) {entity.polyline.material = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
+      if(entity.point !== undefined) {entity.point.color = Cesium.Color.LIGHTSLATEGRAY.withAlpha(1);}
     }
   }
 }

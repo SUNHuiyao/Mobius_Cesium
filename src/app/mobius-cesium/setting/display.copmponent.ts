@@ -121,20 +121,21 @@ export class DisplayComponent extends DataSubscriber implements OnInit {
   public changeShadow(){
     this._Shadow = ! this._Shadow;
     const promise = this.dataService.getcesiumpromise();
+    const viewer = this.dataService.getViewer();
     if(this._Shadow === true){
-      promise.then(function(dataSource) {
-        const entities = dataSource.entities.values;
+      //promise.then(function(dataSource) {
+        const entities = viewer.entities.values;
         for(const entity of entities) {
           entity.polygon.shadows = Cesium.ShadowMode.ENABLED;
         }
-      });
+      //});
     } else {
-      promise.then(function(dataSource) {
-        const entities = dataSource.entities.values;
+      //promise.then(function(dataSource) {
+        const entities = viewer.entities.values;
         for(const entity of entities) {
           entity.polygon.shadows = undefined;
         }
-      });
+      //});
     }
     this.dataService.set_Shadow(this._Shadow);
   }

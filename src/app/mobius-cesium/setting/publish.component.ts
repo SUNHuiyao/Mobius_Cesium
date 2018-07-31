@@ -133,11 +133,12 @@ export class PublishComponent extends DataSubscriber implements OnInit {
         this.dataArr["ColorInvert"] = _data["invert"];
       }
     }
-    const promise = this.dataService.getcesiumpromise();
+   // const promise = this.dataService.getcesiumpromise();
     const _Colortexts: any[] = [];
+    const viewer = this.dataService.getViewer();
     const self = this;
-    promise.then( function(dataSource) {
-      const entities = dataSource.entities.values;
+    //promise.then( function(dataSource) {
+      const entities = viewer.entities.values;
       for (const entity of entities) {
         if(entity.properties[value] !== undefined) {
         if(entity.properties[value]._value !== " ") {
@@ -148,7 +149,7 @@ export class PublishComponent extends DataSubscriber implements OnInit {
           }
         }
       }
-    });
+    //});
     this.dataArr["ColorText"] = _Colortexts.sort();
     this.dataService.set_PuData(this.dataArr);
     this.LoadData();
@@ -166,11 +167,12 @@ export class PublishComponent extends DataSubscriber implements OnInit {
         this.dataArr["Scale"] = _data["scale"];
       }
     }
-    const promise = this.dataService.getcesiumpromise();
+    //const promise = this.dataService.getcesiumpromise();
     const _Heighttexts = [];
+    const viewer = this.dataService.getViewer();
     const self = this;
-    promise.then(function(dataSource) {
-      const entities = dataSource.entities.values;
+    //promise.then(function(dataSource) {
+      const entities = viewer.entities.values;
       for (const entity of entities) {
         if(entity.properties[value] !== undefined) {
         if(entity.properties[value]._value !== " ") {
@@ -181,7 +183,7 @@ export class PublishComponent extends DataSubscriber implements OnInit {
           }
         }
       }
-    });
+    //});
     this.dataArr["ExtrudeText"] = _Heighttexts.sort();
     this.dataService.set_PuData(this.dataArr);
     this.LoadData();
