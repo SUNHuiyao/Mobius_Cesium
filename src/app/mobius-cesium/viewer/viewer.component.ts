@@ -85,20 +85,28 @@ export class ViewerComponent extends DataSubscriber {
   //Cesium geoJson to load data and check mode
   public LoadData(data: JSON) {
     if(this.data !== undefined) {
+      
+      //get viewer from dataService and remove the last dataSources
       const viewer = this.dataService.getViewer();
       viewer.dataSources.removeAll({destroy:true}); 
 
+      //load geojson and add geojson to dataSources
       this.data = data;
       const promise = Cesium.GeoJsonDataSource.load(this.data);
       viewer.dataSources.add(promise);
 
+       //check whether show colorbar or not
       promise.then(function(dataSource) {
         const entities = dataSource.entities.values;
         const self = this;
         if(entities[0].polygon !== undefined) {self._ShowColorBar = true;} else {self._ShowColorBar = false;}
       });
       
+
+      // pass promise to dataService
       this.dataService.setcesiumpromise(promise);
+
+      //check the mode and load different data
       if(this.mode === "editor") {
         this.dataService.getValue(this.data);
         this.dataService.LoadJSONData();

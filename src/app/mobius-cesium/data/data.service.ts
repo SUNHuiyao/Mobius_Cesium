@@ -239,10 +239,7 @@ export class DataService {
   public get_ViData(): object {
     return this._ViData;
   }
-  //set ViData(editor version)
-  public set_ViData(_ViData): void {
-    this._ViData = _ViData;
-  }
+
   //convert geojson to PuData(publish version)
   public LoadJSONData() {
     if(this._jsonModel !== undefined&&this._jsonModel["cesium"] !== undefined) {
@@ -409,11 +406,47 @@ export class DataService {
   public get_PuData(): object {
     return this._PuData;
   }
-  //set PuData
+ 
+  //// ------------------- Settings
+
+  /*
+   * to set visualize settings
+   *
+   */
+
+  /*
+   *  _PuData : Object with properties .... <todo>
+   */
   public set_PuData(_PuData): void {
     this._PuData = _PuData;
   }
-  //create object of ViData
+
+  /*
+   *  _ViData : Object with properties .... <todo>
+   */
+  public set_ViData(_ViData): void {
+    this._ViData = _ViData;
+  }
+  /*
+  _ColorProperty: collect all property names,
+  _ColorText: collect all values under _ColorKey,
+  _ColorKey: Select color property name in Data tab,
+  _ColorMin: minimum value of Color property in Data tab,
+  _ColorMax: maximum value of Color property in Data tab,
+  _ColorInvert: color invert is true or false,
+  _ExtrudeProperty: collect all property names that whose values are number,
+  _ExtrudeText: collect all values under _ExturdeValue,
+  _ExturdeValue: Select Extrude property name in Data tab,
+  _ExtrudeMin: minimum value of Extrude property in Data tab,
+  _ExtrudeMax: maximum value of Extrude property in Data tab,
+  _Scale: extrude height scale,
+  _Invert: extrude height invert is true or false,
+  _HeightChart: it will show height chart or not,
+  _Filter: collect filters,
+  _HideNum: collect filter id numbers,
+  _indexArr: collect entity number that type is not static
+  */
+
   public getViData(_ColorProperty: any[],_ColorText: any[],_ColorKey: string,
                    _ColorMin: number,_ColorMax: number,_ColorInvert: boolean,
                    _ExtrudeProperty: any[],_ExtrudeText: any[],_ExturdeValue: string,
@@ -425,7 +458,28 @@ export class DataService {
                     ExtrudeMin:_ExtrudeMin,ExtrudeMax:_ExtrudeMax,Scale:_Scale,Invert:_Invert,
                     HeightChart:_HeightChart,Filter:_Filter,HideNum:_HideNum,indexArr:_indexArr};
   }
-  //create object of PuData
+
+  /*
+  _ColorDescr: description of Color property,
+  _ColorProperty: collect all property names,
+  _ColorText: collect all values under _ColorKey,
+  _ColorKey: Select color property name in Data tab,
+  _ColorMin: minimum value of Color property in Data tab,
+  _ColorMax: maximum value of Color property in Data tab,
+  _ColorInvert: color invert is true or false,
+  _ExtrudeDescr: description of extrude height property,
+  _ExtrudeProperty: collect all property names that whose values are number,
+  _ExtrudeText: collect all values under _ExturdeValue,
+  _ExturdeValue: Select Extrude property name in Data tab,
+  _ExtrudeMin: minimum value of Extrude property in Data tab,
+  _ExtrudeMax: maximum value of Extrude property in Data tab,
+  _Scale: extrude height scale,
+  _Invert: extrude height invert is true or false,
+  _HeightChart: it will show height chart or not,
+  _Filter: collect filters,
+  _HideNum: collect filter id numbers,
+  _indexArr: collect entity number that type is not static
+   */
   public getPuData(_ColorDescr: string,_ColorProperty: any[],_ColorText: any[],_ColorKey: string,
                    _ColorMin: number,_ColorMax: number,_ColorInvert: boolean,
                    _ExtrudeDescr: string,_ExtrudeProperty: any[],_ExtrudeText: any[],
