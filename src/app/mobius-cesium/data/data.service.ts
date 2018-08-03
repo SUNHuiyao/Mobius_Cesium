@@ -444,7 +444,7 @@ export class DataService {
   _HeightChart: it will show height chart or not,
   _Filter: collect filters,
   _HideNum: collect filter id numbers,
-  _indexArr: collect entity number that type is not static
+  _indexArr: collect entity number whose "TYPE" is not static
   */
 
   public getViData(_ColorProperty: any[],_ColorText: any[],_ColorKey: string,
@@ -478,7 +478,7 @@ export class DataService {
   _HeightChart: it will show height chart or not,
   _Filter: collect filters,
   _HideNum: collect filter id numbers,
-  _indexArr: collect entity number that type is not static
+  _indexArr: collect entity number whose "TYPE" is not static
    */
   public getPuData(_ColorDescr: string,_ColorProperty: any[],_ColorText: any[],_ColorKey: string,
                    _ColorMin: number,_ColorMax: number,_ColorInvert: boolean,
