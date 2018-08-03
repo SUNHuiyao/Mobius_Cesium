@@ -70,7 +70,6 @@ export class ViewerComponent extends DataSubscriber {
       animation:false,
       shadows:true,
       scene3DOnly:true,
-      //terrainShadows: Cesium.ShadowMode.ENABLED
     });
     viewer.scene.imageryLayers.removeAll();
     viewer.scene.globe.baseColor = Cesium.Color.GRAY;
@@ -169,7 +168,7 @@ export class ViewerComponent extends DataSubscriber {
           for(let j = 0;j<texts.length;j++) {
             _ColorKey = [];
             _ColorKey.text = texts[j];
-            _ColorKey.color = _ChromaScale (1 - (j / texts.length));//_ChromaScale(j/texts.length);
+            _ColorKey.color = _ChromaScale (1 - (j / texts.length));
             this._Cattexts.push(_ColorKey);
           }
         } else {
@@ -326,7 +325,7 @@ export class ViewerComponent extends DataSubscriber {
       let initial: boolean = false;
       for(let j = 0;j<_ColorText.length; j++) {
         if(entity.properties[_ColorKey]._value === _ColorText[j]) {
-          const rgb = _ChromaScale(1 - (j / _ColorText.length)); // _ChromaScale((j/_ColorText.length).toFixed(2));
+          const rgb = _ChromaScale(1 - (j / _ColorText.length)); 
           if(entity.polygon !== undefined){entity.polygon.material = Cesium.Color.fromBytes(rgb._rgb[0],rgb._rgb[1],rgb._rgb[2]);}
           if(entity.polyline !== undefined) {
             const newColor = new Cesium.Color.fromBytes(rgb[0],rgb[1],rgb[2]);
